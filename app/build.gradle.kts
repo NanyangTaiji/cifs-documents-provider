@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId = applicationId
         minSdk = libs.versions.androidMinSdk.get().toInt()
-        targetSdk = libs.versions.androidCompileSdk.get().toInt()
+        targetSdk = 34
         versionCode = libs.versions.appVersionCode.get().toInt()
         versionName = libs.versions.appVersionName.get()
 
