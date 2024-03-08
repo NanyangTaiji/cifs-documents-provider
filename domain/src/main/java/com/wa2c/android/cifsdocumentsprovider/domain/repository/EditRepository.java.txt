@@ -1,0 +1,108 @@
+package com.wa2c.android.cifsdocumentsprovider.domain.repository;
+
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils;
+import com.wa2c.android.cifsdocumentsprovider.common.values.ConnectionResult;
+import com.wa2c.android.cifsdocumentsprovider.data.MemoryCache;
+import com.wa2c.android.cifsdocumentsprovider.data.StorageClientManager;
+import com.wa2c.android.cifsdocumentsprovider.data.db.ConnectionSettingDao;
+import com.wa2c.android.cifsdocumentsprovider.data.db.ConnectionSettingEntity;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageClient;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageRequest;
+import com.wa2c.android.cifsdocumentsprovider.domain.IoDispatcher;
+import com.wa2c.android.cifsdocumentsprovider.domain.mapper.DomainMapper;
+import com.wa2c.android.cifsdocumentsprovider.domain.model.DocumentId;
+import com.wa2c.android.cifsdocumentsprovider.domain.model.RemoteConnection;
+import com.wa2c.android.cifsdocumentsprovider.domain.model.RemoteFile;
+import com.wa2c.android.cifsdocumentsprovider.domain.model.StorageUri;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class EditRepository {
+
+    private final StorageClientManager storageClientManager;
+    private final ConnectionSettingDao connectionSettingDao;
+    private final MemoryCache memoryCache;
+    private final IoDispatcher dispatcher;
+
+    @Inject
+    public EditRepository(StorageClientManager storageClientManager, ConnectionSettingDao connectionSettingDao, MemoryCache memoryCache, IoDispatcher dispatcher) {
+        this.storageClientManager = storageClientManager;
+        this.connectionSettingDao = connectionSettingDao;
+        this.memoryCache = memoryCache;
+        this.dispatcher = dispatcher;
+    }
+
+    public List<RemoteConnection> getConnectionList() {
+        List<ConnectionSettingEntity> entities = connectionSettingDao.getList();
+        return entities.stream().map(ConnectionSettingEntity::toDomainModel).collect(Collectors.toList());
+    }
+
+    private StorageClient getClient(StorageConnection connection) {
+        return storageClientManager.getClient(connection.getStorage());
+    }
+
+    public RemoteConnection getConnection(String id) {
+        LogUtils.logD("getConnection: id=" + id);
+        ConnectionSettingEntity entity = connectionSettingDao.getEntity(id);
+        return entity != null ? entity.toDataModel().toDomainModel() : null;
+    }
+
+    public void saveConnection(RemoteConnection connection) {
+        LogUtils.logD("saveConnection: connection=" + connection);
+        ConnectionSettingEntity storageConnection = connection.toDataModel();
+        ConnectionSettingEntity existsEntity = connectionSettingDao.getEntity(connection.getId());
+        ConnectionSettingEntity entity = existsEntity != null ?
+                storageConnection.toEntityModel(existsEntity.getSortOrder(), new Date()) :
+                storageConnection.toEntityModel(connectionSettingDao.getMaxSortOrder() + 1, new Date());
+        connectionSettingDao.insert(entity);
+    }
+
+    public void deleteConnection(String id) {
+        LogUtils.logD("deleteConnection: id=" + id);
+        connectionSettingDao.delete(id);
+    }
+
+    public RemoteConnection loadTemporaryConnection() {
+        LogUtils.logD("loadTemporaryConnection");
+        return memoryCache.getTemporaryConnection().toDomainModel();
+    }
+
+    public void saveTemporaryConnection(RemoteConnection connection) {
+        LogUtils.logD("saveTemporaryConnection: connection=" + connection);
+        memoryCache.setTemporaryConnection(connection.toDataModel());
+    }
+
+    public List<RemoteFile> getFileChildren(RemoteConnection connection, StorageUri uri) {
+        LogUtils.logD("getFileChildren: connection=" + connection + ", uri=" + uri);
+        StorageRequest request = connection.toDataModel().toStorageRequest().replacePathByUri(uri.getText());
+        return getClient(request.getConnection()).getChildren(request).stream()
+                .map(it -> {
+                    DocumentId documentId = DocumentId.fromConnection(request.getConnection(), it);
+                    return documentId != null ? it.toModel(documentId) : null;
+                })
+                .filter(it -> it != null)
+                .collect(Collectors.toList());
+    }
+
+    public ConnectionResult checkConnection(RemoteConnection connection) {
+        LogUtils.logD("Connection check: " + connection.getUri());
+        StorageRequest request = connection.toDataModel().toStorageRequest(null);
+        return getClient(request.getConnection()).checkConnection(request);
+    }
+
+    public void moveConnection(int fromPosition, int toPosition) {
+        LogUtils.logD("moveConnection: fromPosition=" + fromPosition + ", toPosition=" + toPosition);
+        List<ConnectionSettingEntity> entities = connectionSettingDao.getList();
+        entities.add(toPosition, entities.remove(fromPosition));
+        for (int index = 0; index < entities.size(); index++) {
+            connectionSettingDao.updateSortOrder(entities.get(index).getId(), index + 1);
+        }
+    }
+
+}
+

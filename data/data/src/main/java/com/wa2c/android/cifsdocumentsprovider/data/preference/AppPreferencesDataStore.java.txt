@@ -1,0 +1,104 @@
+package com.wa2c.android.cifsdocumentsprovider.data.preference;
+
+import android.content.Context;
+import androidx.datastore.core.DataStore;
+import androidx.datastore.preferences.SharedPreferencesMigration;
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory;
+import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.core.edit;
+import androidx.datastore.preferences.core.intPreferencesKey;
+import androidx.datastore.preferences.core.stringPreferencesKey;
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants;
+import com.wa2c.android.cifsdocumentsprovider.common.values.HostSortType;
+import com.wa2c.android.cifsdocumentsprovider.common.values.UiTheme;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Flow;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Preference repository
+ */
+public class AppPreferencesDataStore {
+
+    /** DataStore */
+    private final DataStore<Preferences> dataStore;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    public AppPreferencesDataStore(Context context) {
+        dataStore = PreferenceDataStoreFactory.create(
+                produceFile -> context.preferencesDataStoreFile("App"),
+                new SharedPreferencesMigration(context, "App")
+        );
+    }
+
+    /** Host sort type */
+    public Flow<HostSortType> getHostSortTypeFlow() {
+        return dataStore.data().map(preferences -> HostSortType.findByValueOrDefault(preferences.get(PREFKEY_HOST_SORT_TYPE)));
+    }
+
+    /** Host sort type */
+    public void setHostSortType(HostSortType type) {
+        executorService.submit(() -> dataStore.setValue(PREFKEY_HOST_SORT_TYPE, type.getIntValue()));
+    }
+
+    /** UI Theme */
+    public Flow<UiTheme> getUiThemeFlow() {
+        return dataStore.data().map(preferences -> UiTheme.findByKeyOrDefault(preferences.get(PREFKEY_UI_THEME)));
+    }
+
+    /** UI Theme */
+    public void setUiTheme(UiTheme value) {
+        executorService.submit(() -> dataStore.setValue(PREFKEY_UI_THEME, value.getKey()));
+    }
+
+    /** Open File limit */
+    public Flow<Integer> getOpenFileLimitFlow() {
+        return dataStore.data().map(preferences -> preferences.get(PREFKEY_OPEN_FILE_LIMIT) != null ? preferences.get(PREFKEY_OPEN_FILE_LIMIT) : Constants.OPEN_FILE_LIMIT_DEFAULT);
+    }
+
+    /** Open File limit */
+    public void setOpenFileLimit(int value) {
+        executorService.submit(() -> dataStore.setValue(PREFKEY_OPEN_FILE_LIMIT, value));
+    }
+
+    /** Use as local */
+    public Flow<Boolean> getUseAsLocalFlow() {
+        return dataStore.data().map(preferences -> preferences.get(PREFKEY_USE_AS_LOCAL) != null ? preferences.get(PREFKEY_USE_AS_LOCAL) : false);
+    }
+
+    /** Use as local */
+    public void setUseAsLocal(boolean value) {
+        executorService.submit(() -> dataStore.setValue(PREFKEY_USE_AS_LOCAL, value));
+    }
+
+    /** Use foreground to make the app resilient to closing by Android OS */
+    public Flow<Boolean> getUseForegroundFlow() {
+        return dataStore.data().map(preferences -> preferences.get(PREFKEY_USE_FOREGROUND) != null ? preferences.get(PREFKEY_USE_FOREGROUND) : false);
+    }
+
+    /** Use foreground to make the app resilient to closing by Android OS */
+    public void setUseForeground(boolean value) {
+        executorService.submit(() -> dataStore.setValue(PREFKEY_USE_FOREGROUND, value));
+    }
+
+    /**
+     * Migrate
+     */
+    public void migrate() {
+        String language = "prefkey_language";
+        String temporaryConnectionJson = "prefkey_temporary_connection_json";
+        dataStore.edit(edit -> {
+            if (edit.contains(language)) edit.remove(language);
+            if (edit.contains(temporaryConnectionJson)) edit.remove(temporaryConnectionJson);
+        });
+    }
+
+    private static final int PREFKEY_HOST_SORT_TYPE = "prefkey_host_sort_type";
+    private static final String PREFKEY_UI_THEME = "prefkey_ui_theme";
+    private static final int PREFKEY_OPEN_FILE_LIMIT = "prefkey_open_file_limit";
+    private static final String PREFKEY_USE_AS_LOCAL = "prefkey_use_as_local";
+    private static final String PREFKEY_USE_FOREGROUND = "prefkey_use_foreground";
+}
+

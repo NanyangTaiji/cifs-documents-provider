@@ -1,0 +1,25 @@
+package com.wa2c.android.cifsdocumentsprovider.data;
+
+import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection;
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
+public class MemoryCache {
+
+    private StorageConnection temporaryConnection;
+
+    @Inject
+    public MemoryCache() {
+    }
+
+    public StorageConnection getTemporaryConnection() {
+        return temporaryConnection;
+    }
+
+    public void setTemporaryConnection(StorageConnection temporaryConnection) {
+        this.temporaryConnection = temporaryConnection;
+    }
+
+}
+

@@ -1,0 +1,37 @@
+package com.wa2c.android.cifsdocumentsprovider.data.db;
+
+import android.content.Context;
+
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.AutoMigration;
+
+@Database(
+        entities = {
+                ConnectionSettingEntity.class,
+        },
+        version = AppDatabase.DB_VERSION,
+        exportSchema = true,
+        autoMigrations = {
+                @AutoMigration (from = 1, to = 2)
+        }
+)
+public abstract class AppDatabase extends RoomDatabase {
+
+    public abstract ConnectionSettingDao getStorageSettingDao();
+
+    /** DB name */
+    private static final String DB_NAME = "app.db";
+    /** DB version */
+    public static final int DB_VERSION = 2;
+
+    /**
+     * Build DB
+     */
+    public static AppDatabase buildDb(Context context) {
+        return Room.databaseBuilder(context, AppDatabase.class, DB_NAME)
+                .build();
+    }
+}
+

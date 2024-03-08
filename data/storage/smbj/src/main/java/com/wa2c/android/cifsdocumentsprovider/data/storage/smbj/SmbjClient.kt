@@ -20,15 +20,15 @@ import com.hierynomus.smbj.share.File
 import com.rapid7.client.dcerpc.mssrvs.ServerService
 import com.rapid7.client.dcerpc.transport.SMBTransportFactories
 import com.wa2c.android.cifsdocumentsprovider.common.exception.StorageException
-import com.wa2c.android.cifsdocumentsprovider.common.utils.appendChild
-import com.wa2c.android.cifsdocumentsprovider.common.utils.fileName
-import com.wa2c.android.cifsdocumentsprovider.common.utils.isDirectoryUri
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logW
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.appendChild
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getFileName
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.isDirectoryUri
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logW
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
 import com.wa2c.android.cifsdocumentsprovider.common.values.ConnectionResult
-import com.wa2c.android.cifsdocumentsprovider.common.values.OPEN_FILE_LIMIT_DEFAULT
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.OPEN_FILE_LIMIT_DEFAULT
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageClient
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageFile
@@ -114,7 +114,7 @@ class SmbjClient(
     private fun DiskShare.exists(path: String): Boolean {
         return try {
             if (path.isEmpty()) true
-            else if (path.isDirectoryUri) folderExists(path)
+            else if (isDirectoryUri(path)) folderExists(path)
             else fileExists(path)
         } catch (e: Exception) {
             false
@@ -164,7 +164,7 @@ class SmbjClient(
 
     private fun FileAllInformation.toStorageFile(uriText: String): StorageFile {
         return StorageFile(
-            name = uriText.fileName,
+            name = getFileName(uriText),
             uri = uriText,
             size = standardInformation.endOfFile,
             lastModified = basicInformation.changeTime.toEpochMillis(),
@@ -176,7 +176,7 @@ class SmbjClient(
         val isDirectory = this.fileInformation.standardInformation.isDirectory
         val uri = this.uncPath.uncPathToUri(isDirectory) ?: throw StorageException.FileNotFoundException()
         return StorageFile(
-            name = uri.fileName,
+            name = getFileName(uri),
             uri = uri,
             size = this.fileInformation.standardInformation.endOfFile,
             lastModified = this.fileInformation.basicInformation.changeTime.toEpochMillis(),
@@ -188,7 +188,7 @@ class SmbjClient(
         return withContext(dispatcher) {
             try {
                 getChildren(request, true)
-                ConnectionResult.Success
+                ConnectionResult.Success()
             } catch (e: Exception) {
                 logW(e)
                 val c = e.getCause()
@@ -253,7 +253,7 @@ class SmbjClient(
                     .map { info ->
                         StorageFile(
                             name = info.netName,
-                            uri = request.uri.appendChild(info.netName, true),
+                            uri = appendChild(request.uri,info.netName, true),
                             size = 0,
                             lastModified = 0,
                             isDirectory = true,
@@ -272,7 +272,7 @@ class SmbjClient(
                             )
                             StorageFile(
                                 name = info.fileName,
-                                uri = request.uri.appendChild(info.fileName, isDirectory),
+                                uri = appendChild(request.uri,info.fileName, isDirectory),
                                 size = info.endOfFile,
                                 lastModified = info.changeTime.toEpochMillis(),
                                 isDirectory = isDirectory,

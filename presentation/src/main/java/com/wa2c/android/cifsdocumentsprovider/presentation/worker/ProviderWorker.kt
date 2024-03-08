@@ -6,7 +6,7 @@ import android.os.Looper
 import androidx.lifecycle.coroutineScope
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
 import com.wa2c.android.cifsdocumentsprovider.domain.repository.StorageRepository
 import com.wa2c.android.cifsdocumentsprovider.presentation.ext.collectIn
 import com.wa2c.android.cifsdocumentsprovider.presentation.provideStorageRepository

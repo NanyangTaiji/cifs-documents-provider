@@ -1,0 +1,65 @@
+package com.wa2c.android.cifsdocumentsprovider.data;
+
+import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.apache.ApacheFtpClient;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageClient;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.jcifsng.JCifsNgClient;
+import com.wa2c.android.cifsdocumentsprovider.data.storage.smbj.SmbjClient;
+
+/**
+ * Storage Client Manager
+ */
+public class StorageClientManager {
+
+    /** jCIFS NG (SMB2,3) client */
+    private final JCifsNgClient jCifsNgClient;
+    /** SMBJ (SMB2,3) client */
+    private final SmbjClient smbjClient;
+    /** jCIFS NG (SMB1) client */
+    private final JCifsNgClient jCifsNgLegacyClient;
+    /** Apache FTP client */
+    private final ApacheFtpClient apacheFtpClient;
+    /** Apache FTPS client */
+    private final ApacheFtpClient apacheFtpsClient;
+
+    public StorageClientManager(int fileOpenLimit) {
+        jCifsNgClient = new JCifsNgClient(false, fileOpenLimit);
+        smbjClient = new SmbjClient(fileOpenLimit);
+        jCifsNgLegacyClient = new JCifsNgClient(true, fileOpenLimit);
+        apacheFtpClient = new ApacheFtpClient(false, fileOpenLimit);
+        apacheFtpsClient = new ApacheFtpClient(true, fileOpenLimit);
+    }
+
+    /**
+     * Get client
+     */
+    public StorageClient getClient(StorageType type) {
+        switch (type) {
+            case JCIFS:
+                return jCifsNgClient;
+            case SMBJ:
+                return smbjClient;
+            case JCIFS_LEGACY:
+                return jCifsNgLegacyClient;
+            case APACHE_FTP:
+                return apacheFtpClient;
+            case APACHE_FTPS:
+                return apacheFtpsClient;
+            default:
+                throw new IllegalArgumentException("Invalid StorageType: " + type);
+        }
+    }
+
+    /**
+     * Close clients
+     */
+    public void closeClient() {
+        if (jCifsNgClient != null) jCifsNgClient.close();
+        if (smbjClient != null) smbjClient.close();
+        if (jCifsNgLegacyClient != null) jCifsNgLegacyClient.close();
+        if (apacheFtpClient != null) apacheFtpClient.close();
+        if (apacheFtpsClient != null) apacheFtpsClient.close();
+    }
+
+}
+

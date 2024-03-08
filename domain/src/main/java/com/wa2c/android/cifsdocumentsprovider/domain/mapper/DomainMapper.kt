@@ -3,8 +3,8 @@ package com.wa2c.android.cifsdocumentsprovider.domain.mapper
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.net.toUri
-import com.wa2c.android.cifsdocumentsprovider.common.utils.generateUUID
-import com.wa2c.android.cifsdocumentsprovider.common.utils.mimeType
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.generateUUID
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getMimeType
 import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType
 import com.wa2c.android.cifsdocumentsprovider.data.db.ConnectionSettingEntity
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection
@@ -34,11 +34,14 @@ internal object DomainMapper {
         return when (type) {
             StorageType.JCIFS,
             StorageType.SMBJ,
-            StorageType.JCIFS_LEGACY -> {
+            StorageType.JCIFS_LEGACY,
+            -> {
                 formatter.decodeFromString<StorageConnection.Cifs>(json)
             }
+
             StorageType.APACHE_FTP,
-            StorageType.APACHE_FTPS -> {
+            StorageType.APACHE_FTPS,
+            -> {
                 formatter.decodeFromString<StorageConnection.Ftp>(json)
             }
         }
@@ -48,7 +51,7 @@ internal object DomainMapper {
      * Convert db model to data model.
      */
     fun ConnectionSettingEntity.toDataModel(): StorageConnection {
-        val type = StorageType.findByValue(this.type) ?: StorageType.default
+        val type = StorageType.findByValue(this.type) ?: StorageType.getDefault()
         val json = EncryptUtils.decrypt(this.data)
         return jsonToStorageConnection(type, json)
     }
@@ -60,7 +63,7 @@ internal object DomainMapper {
         return RemoteConnectionIndex(
             id = id,
             name = name,
-            storage = StorageType.findByValue(type) ?: StorageType.default,
+            storage = StorageType.findByValue(type) ?: StorageType.getDefault(),
             uri = uri,
         )
     }
@@ -87,13 +90,13 @@ internal object DomainMapper {
         modifiedDate: Date,
     ): ConnectionSettingEntity {
         return ConnectionSettingEntity(
-            id = this.id,
-            name = this.name,
-            uri = this.uri,
-            type = this.storage.value,
-            data = EncryptUtils.encrypt(formatter.encodeToString(this))  ,
-            sortOrder = sortOrder,
-            modifiedDate = modifiedDate.time
+            this.id,
+            this.name,
+            this.uri,
+            this.storage.value,
+            EncryptUtils.encrypt(formatter.encodeToString(this)),
+            sortOrder,
+            modifiedDate.time
         )
     }
 
@@ -130,6 +133,7 @@ internal object DomainMapper {
                     optionAddExtension = extension,
                 )
             }
+
             is StorageConnection.Ftp -> {
                 RemoteConnection(
                     id = id,
@@ -187,10 +191,11 @@ internal object DomainMapper {
      * Convert domain model to data model.
      */
     fun RemoteConnection.toDataModel(): StorageConnection {
-        return when (storage){
+        return when (storage) {
             StorageType.JCIFS,
             StorageType.SMBJ,
-            StorageType.JCIFS_LEGACY -> {
+            StorageType.JCIFS_LEGACY,
+            -> {
                 StorageConnection.Cifs(
                     id = id,
                     name = name,
@@ -208,8 +213,10 @@ internal object DomainMapper {
                     enableDfs = enableDfs,
                 )
             }
+
             StorageType.APACHE_FTP,
-            StorageType.APACHE_FTPS -> {
+            StorageType.APACHE_FTPS,
+            -> {
                 StorageConnection.Ftp(
                     id = id,
                     name = name,
@@ -235,11 +242,11 @@ internal object DomainMapper {
      * Add Mime type extension
      */
     fun String.addExtension(mimeType: String? = null): String {
-        return  if (mimeType.isNullOrEmpty()) {
+        return if (mimeType.isNullOrEmpty()) {
             this
         } else {
             val ext = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-            if (ext == this.mimeType || ext.isNullOrEmpty()) {
+            if (ext == getMimeType(this) || ext.isNullOrEmpty()) {
                 this
             } else {
                 "$this.$ext"

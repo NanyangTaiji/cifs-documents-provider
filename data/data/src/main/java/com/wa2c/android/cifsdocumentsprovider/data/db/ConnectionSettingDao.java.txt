@@ -1,0 +1,50 @@
+package com.wa2c.android.cifsdocumentsprovider.data.db;
+
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
+import androidx.room.Query;
+import androidx.room.Transaction;
+
+import java.util.List;
+
+@Dao
+public interface ConnectionSettingDao {
+
+    @Query("SELECT count(id) FROM " + ConnectionSettingEntity.TABLE_NAME)
+    int getCount();
+
+    @Query("SELECT coalesce(max(sort_order), 0) FROM " + ConnectionSettingEntity.TABLE_NAME)
+    int getMaxSortOrder();
+
+    @Query("SELECT * FROM " + ConnectionSettingEntity.TABLE_NAME + " WHERE id = :id")
+    ConnectionSettingEntity getEntity(String id);
+
+    @Query("SELECT * FROM " + ConnectionSettingEntity.TABLE_NAME + " WHERE instr(:uri, uri) > 0 ORDER BY sort_order")
+    ConnectionSettingEntity getEntityByUri(String uri);
+
+    @Query("SELECT * FROM " + ConnectionSettingEntity.TABLE_NAME + " ORDER BY sort_order")
+    List<ConnectionSettingEntity> getList();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(ConnectionSettingEntity entity);
+
+    @Query("DELETE FROM " + ConnectionSettingEntity.TABLE_NAME + " WHERE id = :id")
+    void delete(String id);
+
+    @Query("UPDATE " + ConnectionSettingEntity.TABLE_NAME + " SET sort_order = :sortOrder WHERE id = :id")
+    void updateSortOrder(String id, int sortOrder);
+
+    @Transaction
+    default void move(int fromPosition, int toPosition) {
+        List<ConnectionSettingEntity> list = getList();
+        ConnectionSettingEntity movedEntity = list.remove(fromPosition);
+        list.add(toPosition, movedEntity);
+        for (int index = 0; index < list.size(); index++) {
+            ConnectionSettingEntity entity = list.get(index);
+            updateSortOrder(entity.id, index + 1);
+        }
+    }
+
+}
+

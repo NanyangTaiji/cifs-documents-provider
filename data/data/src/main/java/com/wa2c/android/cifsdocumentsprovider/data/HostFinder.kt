@@ -2,8 +2,8 @@ package com.wa2c.android.cifsdocumentsprovider.data
 
 import com.stealthcopter.networktools.SubnetDevices
 import com.stealthcopter.networktools.subnet.Device
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject

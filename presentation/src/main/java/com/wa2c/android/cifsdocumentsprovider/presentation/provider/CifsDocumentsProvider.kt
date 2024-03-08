@@ -21,12 +21,12 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkQuery
 import com.wa2c.android.cifsdocumentsprovider.common.exception.StorageException
-import com.wa2c.android.cifsdocumentsprovider.common.utils.appendChild
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.mimeType
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.appendChild
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getMimeType
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_AUTHORITY
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_SEPARATOR
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_AUTHORITY
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_SEPARATOR
 import com.wa2c.android.cifsdocumentsprovider.domain.model.DocumentId
 import com.wa2c.android.cifsdocumentsprovider.domain.model.RemoteFile
 import com.wa2c.android.cifsdocumentsprovider.domain.repository.StorageRepository
@@ -85,7 +85,7 @@ class CifsDocumentsProvider : DocumentsProvider() {
         return inputId.legacyId?.let {
             // for legacy document id
             val base = if (it.isNotEmpty()) it.substringBeforeLast(inputId.path) else it
-            base.appendChild(outputId.path, false)
+           appendChild(base,outputId.path, false)
         } ?: outputId.idText
     }
 
@@ -229,7 +229,7 @@ class CifsDocumentsProvider : DocumentsProvider() {
     }
 
     override fun getDocumentType(documentId: String?): String {
-        return documentId.mimeType
+        return getMimeType(documentId)
     }
 
     override fun openDocumentThumbnail(
@@ -418,7 +418,7 @@ class CifsDocumentsProvider : DocumentsProvider() {
                     row.add(DocumentsContract.Document.COLUMN_SIZE, file.size)
                     row.add(DocumentsContract.Document.COLUMN_DISPLAY_NAME, file.name)
                     row.add(DocumentsContract.Document.COLUMN_LAST_MODIFIED, file.lastModified)
-                    row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, file.name.mimeType)
+                    row.add(DocumentsContract.Document.COLUMN_MIME_TYPE, getMimeType(file.name))
                     row.add(DocumentsContract.Document.COLUMN_FLAGS,
                         DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE or
                                 DocumentsContract.Document.FLAG_SUPPORTS_WRITE or

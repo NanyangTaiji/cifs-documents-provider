@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wa2c.android.cifsdocumentsprovider.common.exception.EditException
-import com.wa2c.android.cifsdocumentsprovider.common.utils.generateUUID
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.generateUUID
 import com.wa2c.android.cifsdocumentsprovider.common.values.ConnectionResult
 import com.wa2c.android.cifsdocumentsprovider.domain.model.RemoteConnection
 import com.wa2c.android.cifsdocumentsprovider.domain.repository.EditRepository
@@ -128,7 +128,7 @@ class EditViewModel @Inject constructor(
                     _connectionResult.emit(result)
                 }
             }.onFailure {
-                _connectionResult.emit(ConnectionResult.Failure(cause = it))
+                _connectionResult.emit(ConnectionResult.Failure(it))
             }.also {
                 _isBusy.emit(false)
             }

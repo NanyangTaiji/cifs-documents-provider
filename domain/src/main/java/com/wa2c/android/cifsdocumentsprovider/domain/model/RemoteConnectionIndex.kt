@@ -11,6 +11,6 @@ import kotlinx.parcelize.Parcelize
 data class RemoteConnectionIndex(
     val id: String,
     val name: String,
-    val storage: StorageType = StorageType.default,
+    val storage: StorageType = StorageType.getDefault(),
     val uri: String,
 ): Parcelable

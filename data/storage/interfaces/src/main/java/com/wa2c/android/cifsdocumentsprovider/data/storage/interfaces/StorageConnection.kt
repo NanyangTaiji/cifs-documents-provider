@@ -1,9 +1,9 @@
 package com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces
 
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getPort
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getUriText
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getPort
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getUriText
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.USER_GUEST
 import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType
-import com.wa2c.android.cifsdocumentsprovider.common.values.USER_GUEST
 import kotlinx.serialization.Serializable
 
 /**
@@ -46,7 +46,7 @@ sealed class StorageConnection {
     data class Cifs(
         override val id: String,
         override val name: String,
-        override val storage: StorageType = StorageType.default,
+        override val storage: StorageType = StorageType.getDefault(),
         override val host: String,
         override val port: String?,
         override val folder: String?,
@@ -67,7 +67,7 @@ sealed class StorageConnection {
     data class Ftp(
         override val id: String,
         override val name: String,
-        override val storage: StorageType = StorageType.default,
+        override val storage: StorageType = StorageType.getDefault(),
         override val host: String,
         override val port: String?,
         override val folder: String?,

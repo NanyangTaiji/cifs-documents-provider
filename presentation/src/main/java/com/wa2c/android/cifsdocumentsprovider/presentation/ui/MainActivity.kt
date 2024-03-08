@@ -19,7 +19,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.wa2c.android.cifsdocumentsprovider.common.utils.mimeType
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getMimeType
 import com.wa2c.android.cifsdocumentsprovider.domain.model.getCurrentReady
 import com.wa2c.android.cifsdocumentsprovider.presentation.ext.collectIn
 import com.wa2c.android.cifsdocumentsprovider.presentation.ext.mode
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, uri)
-                type = uri.toString().mimeType
+                type = getMimeType(uri.toString())
             }
             startActivity(Intent.createChooser(shareIntent, null))
         } else {

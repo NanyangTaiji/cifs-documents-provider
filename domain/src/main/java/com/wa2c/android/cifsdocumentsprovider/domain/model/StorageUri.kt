@@ -1,11 +1,11 @@
 package com.wa2c.android.cifsdocumentsprovider.domain.model
 
 import android.os.Parcelable
-import com.wa2c.android.cifsdocumentsprovider.common.utils.appendChild
-import com.wa2c.android.cifsdocumentsprovider.common.utils.fileName
-import com.wa2c.android.cifsdocumentsprovider.common.utils.isDirectoryUri
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_SEPARATOR
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_START
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.appendChild
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getFileName
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.isDirectoryUri
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_SEPARATOR
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_START
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -46,11 +46,11 @@ data class StorageUri(
 
     /** File name */
     val fileName: String
-        get() = text.fileName
+        get() = getFileName(text)
 
     fun addPath(path: String?): StorageUri {
         return if (path.isNullOrEmpty()) { this } else {
-            StorageUri(text.appendChild(path, path.isDirectoryUri))
+            StorageUri(appendChild(text,path, isDirectoryUri(path)))
         }
     }
 

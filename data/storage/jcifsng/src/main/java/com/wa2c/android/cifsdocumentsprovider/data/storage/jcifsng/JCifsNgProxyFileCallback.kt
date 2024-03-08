@@ -18,8 +18,8 @@ package com.wa2c.android.cifsdocumentsprovider.data.storage.jcifsng
 
 import android.os.ProxyFileDescriptorCallback
 import android.system.ErrnoException
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.utils.BackgroundBufferReader
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.utils.BackgroundBufferWriter

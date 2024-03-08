@@ -19,6 +19,7 @@ val ConnectionResult.messageType: PopupMessageType
         is ConnectionResult.Success -> PopupMessageType.Success
         is ConnectionResult.Warning -> PopupMessageType.Warning
         is ConnectionResult.Failure -> PopupMessageType.Error
+        else -> {PopupMessageType.Error}
     }
 
 /** ConnectionResult message string resource ID */
@@ -28,6 +29,7 @@ val ConnectionResult.messageRes
         is ConnectionResult.Success -> { R.string.edit_check_connection_ok_message }
         is ConnectionResult.Warning -> { R.string.edit_check_connection_wn_message }
         is ConnectionResult.Failure -> { R.string.edit_check_connection_ng_message }
+        else -> {R.string.edit_check_connection_ng_message}
     }
 
 val HostSortType.labelRes: Int

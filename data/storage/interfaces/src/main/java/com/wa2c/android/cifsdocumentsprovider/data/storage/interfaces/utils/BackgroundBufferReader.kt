@@ -23,8 +23,8 @@
  */
 package com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.utils
 
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers

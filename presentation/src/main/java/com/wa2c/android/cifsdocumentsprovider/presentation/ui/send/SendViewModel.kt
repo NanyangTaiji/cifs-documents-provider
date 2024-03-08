@@ -1,7 +1,7 @@
 package com.wa2c.android.cifsdocumentsprovider.presentation.ui.send
 
 import androidx.lifecycle.ViewModel
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
 import com.wa2c.android.cifsdocumentsprovider.domain.model.SendData
 import com.wa2c.android.cifsdocumentsprovider.domain.repository.SendRepository
 import com.wa2c.android.cifsdocumentsprovider.presentation.ext.MainCoroutineScope

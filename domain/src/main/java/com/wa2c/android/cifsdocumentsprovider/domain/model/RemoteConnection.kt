@@ -1,9 +1,9 @@
 package com.wa2c.android.cifsdocumentsprovider.domain.model
 
 import android.os.Parcelable
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getPort
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getUriText
-import com.wa2c.android.cifsdocumentsprovider.common.values.DEFAULT_ENCODING
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getPort
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getUriText
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.DEFAULT_ENCODING
 import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 data class RemoteConnection(
     val id: String,
     val name: String = "",
-    val storage: StorageType = StorageType.default,
+    val storage: StorageType = StorageType.getDefault(),
     // Settings
     val domain: String? = null,
     val host: String,

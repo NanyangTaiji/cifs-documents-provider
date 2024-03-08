@@ -1,0 +1,73 @@
+package com.wa2c.android.cifsdocumentsprovider.data.db;
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType;
+
+@Entity(
+        tableName = ConnectionSettingEntity.TABLE_NAME,
+        indices = {
+                @Index(value = {"sort_order"})
+        }
+)
+public class ConnectionSettingEntity {
+
+    /** Table name.  */
+    public static final String TABLE_NAME = "connection_setting";
+
+    /** ID */
+    @NonNull                    //necessary for PrimaryKey
+    @PrimaryKey
+    @ColumnInfo(name = "id")
+    public String id;
+
+    /** Name */
+    @ColumnInfo(name = "name")
+    public String name;
+
+    /** Type */
+    @ColumnInfo(name = "type")
+    public String type = StorageType.getDefault().getValue();
+
+    /** URI */
+    @ColumnInfo(name = "uri")
+    public String uri;
+
+    /** Data (Encrypted) */
+    @ColumnInfo(name = "data")
+    public String data;
+
+    @ColumnInfo(name = "sort_order")
+    public int sortOrder;
+
+    /** Modified Date */
+    @ColumnInfo(name = "modified_date")
+    public long modifiedDate;
+
+    // Default constructor
+    public ConnectionSettingEntity() {}
+
+    // Constructor with parameters
+    public ConnectionSettingEntity(String id, String name, String type, String uri, String data, int sortOrder, long modifiedDate) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
+        this.uri = uri;
+        this.data = data;
+        this.sortOrder = sortOrder;
+        this.modifiedDate = modifiedDate;
+    }
+
+    /**
+     * Create a new instance with default storage type.
+     */
+    public ConnectionSettingEntity(String id, String name, String uri, String data, int sortOrder, long modifiedDate) {
+        this(id, name, StorageType.getDefault().getValue(), uri, data, sortOrder, modifiedDate);
+    }
+
+}
+
+

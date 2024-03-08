@@ -1,9 +1,6 @@
 package com.wa2c.android.cifsdocumentsprovider.domain.repository
 
 import android.os.ProxyFileDescriptorCallback
-import com.wa2c.android.cifsdocumentsprovider.common.utils.fileName
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
 import com.wa2c.android.cifsdocumentsprovider.data.StorageClientManager
 import com.wa2c.android.cifsdocumentsprovider.data.db.ConnectionSettingDao
@@ -14,6 +11,9 @@ import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageCon
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageRequest
 import com.wa2c.android.cifsdocumentsprovider.domain.IoDispatcher
 import com.wa2c.android.cifsdocumentsprovider.common.exception.StorageException
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getFileName
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
 import com.wa2c.android.cifsdocumentsprovider.domain.mapper.DomainMapper.addExtension
 import com.wa2c.android.cifsdocumentsprovider.domain.mapper.DomainMapper.toDataModel
 import com.wa2c.android.cifsdocumentsprovider.domain.mapper.DomainMapper.toItem
@@ -198,7 +198,7 @@ class StorageRepository @Inject internal constructor(
         logD("copyFile: sourceDocumentId=$sourceDocumentId, targetParentDocumentId=$targetParentDocumentId")
         return withContext(dispatcher) {
             val sourceRequest = getStorageRequest(sourceDocumentId) ?: return@withContext null
-            val targetDocumentId = targetParentDocumentId.appendChild(sourceRequest.uri.fileName) ?: return@withContext null
+            val targetDocumentId = targetParentDocumentId.appendChild(getFileName(sourceRequest.uri)) ?: return@withContext null
             val targetRequest = getStorageRequest(targetDocumentId) ?: return@withContext null
             if (targetRequest.connection.readOnly || targetRequest.connection.readOnly) throw StorageException.ReadOnlyException()
 
@@ -220,7 +220,7 @@ class StorageRepository @Inject internal constructor(
         logD("moveFile: sourceDocumentId=$sourceDocumentId, targetParentDocumentId=$targetParentDocumentId")
         return withContext(dispatcher) {
             val sourceRequest = getStorageRequest(sourceDocumentId) ?: return@withContext null
-            val targetDocumentId = targetParentDocumentId.appendChild(sourceRequest.uri.fileName) ?: return@withContext null
+            val targetDocumentId = targetParentDocumentId.appendChild(getFileName(sourceRequest.uri)) ?: return@withContext null
             val targetRequest = getStorageRequest(targetDocumentId) ?: return@withContext null
             if (sourceRequest.connection.readOnly || targetRequest.connection.readOnly) throw StorageException.ReadOnlyException()
 

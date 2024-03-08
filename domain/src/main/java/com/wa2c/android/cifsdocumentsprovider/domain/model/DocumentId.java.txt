@@ -1,0 +1,100 @@
+package com.wa2c.android.cifsdocumentsprovider.domain.model;
+
+import static com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_SEPARATOR;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants;
+
+/**
+ * Document ID
+ * [Document ID format: <connectionId>:<path>]
+ */
+public class DocumentId implements Parcelable {
+    private final String connectionId;
+    private final String path;
+    private final String legacyId;
+
+    public DocumentId(String connectionId, String path, String legacyId) {
+        this.connectionId = connectionId;
+        this.path = path;
+        this.legacyId = legacyId;
+    }
+
+    protected DocumentId(Parcel in) {
+        connectionId = in.readString();
+        path = in.readString();
+        legacyId = in.readString();
+    }
+
+    public static final Creator<DocumentId> CREATOR = new Creator<DocumentId>() {
+        @Override
+        public DocumentId createFromParcel(Parcel in) {
+            return new DocumentId(in);
+        }
+
+        @Override
+        public DocumentId[] newArray(int size) {
+            return new DocumentId[size];
+        }
+    };
+
+    public String getIdText() {
+        return isRoot() ? "" : connectionId + Constants.DOCUMENT_ID_DELIMITER + path;
+    }
+
+    public boolean isRoot() {
+        return connectionId.isEmpty();
+    }
+
+    public boolean isPathRoot() {
+        return path.isEmpty() || path.equals(URI_SEPARATOR);
+    }
+
+    public DocumentId appendChild(String child, boolean isDirectory) {
+        String newIdText = getIdText() + URI_SEPARATOR + child;
+        return fromIdText(newIdText);
+    }
+
+    @Override
+    public String toString() {
+        return getIdText();
+    }
+
+    public static DocumentId ROOT = new DocumentId("", "", null);
+
+    public static DocumentId fromIdText(String documentIdText) {
+        String connectionId = documentIdText.split(Constants.DOCUMENT_ID_DELIMITER)[0];
+        String path = documentIdText.substring(connectionId.length() + 1);
+        return fromConnection(connectionId, path, null);
+    }
+
+    public static DocumentId fromConnection(String connectionId, String path, String legacyId) {
+        if (isInvalidDocumentId(connectionId))
+            return null;
+        return new DocumentId(connectionId, path != null ? path : "", legacyId);
+    }
+
+
+    //TODO may have mistake
+    public static boolean isInvalidDocumentId(String connectionId) {
+        return connectionId.contains(Constants.DOCUMENT_ID_DELIMITER) || connectionId.indexOf(Constants.URI_SEPARATOR) != -1;
+    }
+
+
+    // Other methods for Parcelable implementation
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(connectionId);
+        parcel.writeString(path);
+        parcel.writeString(legacyId);
+    }
+}
+

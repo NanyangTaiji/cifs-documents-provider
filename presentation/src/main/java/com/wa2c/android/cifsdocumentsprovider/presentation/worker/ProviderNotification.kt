@@ -9,9 +9,9 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getFileName
-import com.wa2c.android.cifsdocumentsprovider.common.values.NOTIFICATION_CHANNEL_ID_PROVIDER
-import com.wa2c.android.cifsdocumentsprovider.common.values.NOTIFICATION_ID_PROVIDER
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getFileName
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.NOTIFICATION_CHANNEL_ID_PROVIDER
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.NOTIFICATION_ID_PROVIDER
 import com.wa2c.android.cifsdocumentsprovider.presentation.R
 
 /**
@@ -60,7 +60,7 @@ class ProviderNotification(
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setStyle(
                 NotificationCompat.InboxStyle().also { style ->
-                    list.map { Uri.parse(it).getFileName(context) }.filter { it.isNotBlank() }.forEach { style.addLine(it) }
+                    list.map {getFileName(context, Uri.parse(it)) }.filter { it.isNotBlank() }.forEach { style.addLine(it) }
                 }
             )
             .build()

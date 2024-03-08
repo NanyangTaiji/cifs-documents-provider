@@ -3,7 +3,7 @@ package com.wa2c.android.cifsdocumentsprovider.data.storage.smbj
 import android.os.ProxyFileDescriptorCallback
 import android.system.ErrnoException
 import com.hierynomus.smbj.share.File
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.utils.BackgroundBufferReader
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.utils.checkAccessMode

@@ -4,9 +4,9 @@ import android.content.Context
 import android.net.Uri
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getFileName
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
-import com.wa2c.android.cifsdocumentsprovider.common.values.BUFFER_SIZE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getFileName
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.BUFFER_SIZE
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageFile
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -35,7 +35,7 @@ class DocumentFileManager @Inject constructor(
         val file = getDocumentFile(uri) ?: return null
         return Pair(
             StorageFile(
-                name = file.name ?: file.uri.getFileName(context),
+                name = file.name ?: getFileName(context,file.uri),
                 size = file.length(),
                 uri = file.uri.toString(),
                 isDirectory = file.isDirectory,

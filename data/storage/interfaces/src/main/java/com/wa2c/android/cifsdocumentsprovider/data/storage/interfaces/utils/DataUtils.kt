@@ -1,10 +1,10 @@
 package com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.utils
 
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getUriText
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getUriText
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.UNC_SEPARATOR
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.UNC_START
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_SEPARATOR
 import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType
-import com.wa2c.android.cifsdocumentsprovider.common.values.UNC_SEPARATOR
-import com.wa2c.android.cifsdocumentsprovider.common.values.UNC_START
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_SEPARATOR
 
 /**
  * Rename URI name

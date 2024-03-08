@@ -3,7 +3,7 @@ package com.wa2c.android.cifsdocumentsprovider.presentation.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
 import com.wa2c.android.cifsdocumentsprovider.common.values.UiTheme
 import com.wa2c.android.cifsdocumentsprovider.domain.repository.AppRepository
 import com.wa2c.android.cifsdocumentsprovider.domain.repository.SendRepository

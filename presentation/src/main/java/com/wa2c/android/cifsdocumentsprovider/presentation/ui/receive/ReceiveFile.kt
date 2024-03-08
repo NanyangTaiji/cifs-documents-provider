@@ -6,7 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
-import com.wa2c.android.cifsdocumentsprovider.common.utils.getFileName
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.getFileName
 
 @Composable
 fun ReceiveFile(
@@ -40,7 +40,7 @@ fun ReceiveFile(
         when {
             uriList.size == 1 -> {
                 // Single
-                uriList.first().getFileName(context).let { fileName ->
+                getFileName(context,uriList.first()).let { fileName ->
                     singleUriLauncher.launch(fileName)
                 }
             }

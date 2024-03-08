@@ -1,6 +1,5 @@
 package com.wa2c.android.cifsdocumentsprovider.presentation.worker
 
-import com.wa2c.android.cifsdocumentsprovider.common.values.NOTIFICATION_ID_SEND
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,7 +10,8 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.work.ForegroundInfo
-import com.wa2c.android.cifsdocumentsprovider.common.values.NOTIFICATION_CHANNEL_ID_SEND
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.NOTIFICATION_CHANNEL_ID_SEND
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.NOTIFICATION_ID_SEND
 import com.wa2c.android.cifsdocumentsprovider.domain.model.SendDataState
 import com.wa2c.android.cifsdocumentsprovider.domain.model.SendData
 import com.wa2c.android.cifsdocumentsprovider.presentation.R

@@ -3,15 +3,15 @@ package com.wa2c.android.cifsdocumentsprovider.data.storage.jcifsng
 import android.os.ProxyFileDescriptorCallback
 import android.util.LruCache
 import com.wa2c.android.cifsdocumentsprovider.common.exception.StorageException
-import com.wa2c.android.cifsdocumentsprovider.common.utils.isDirectoryUri
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logW
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.isDirectoryUri
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logW
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
-import com.wa2c.android.cifsdocumentsprovider.common.values.CACHE_TIMEOUT
-import com.wa2c.android.cifsdocumentsprovider.common.values.CONNECTION_TIMEOUT
 import com.wa2c.android.cifsdocumentsprovider.common.values.ConnectionResult
-import com.wa2c.android.cifsdocumentsprovider.common.values.READ_TIMEOUT
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.CACHE_TIMEOUT
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.CONNECTION_TIMEOUT
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.READ_TIMEOUT
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageClient
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageFile
@@ -115,7 +115,7 @@ class JCifsNgClient(
     private suspend fun SmbFile.toStorageFile(): StorageFile {
         val urlText = url.toString()
         return withContext(dispatcher) {
-            val isDir = urlText.isDirectoryUri || isDirectory
+            val isDir = isDirectoryUri(urlText) || isDirectory
             StorageFile(
                 name = name.trim('/'),
                 uri = urlText,
@@ -133,7 +133,7 @@ class JCifsNgClient(
         return withContext(dispatcher) {
             try {
                 getChildren(request, true).let {
-                    ConnectionResult.Success
+                    ConnectionResult.Success()
                 }
             } catch (e: Exception) {
                 logW(e)

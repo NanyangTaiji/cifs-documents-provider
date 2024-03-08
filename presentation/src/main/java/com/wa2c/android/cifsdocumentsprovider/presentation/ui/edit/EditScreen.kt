@@ -52,10 +52,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wa2c.android.cifsdocumentsprovider.common.values.ConnectionResult
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_AUTHORITY
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_START
 import com.wa2c.android.cifsdocumentsprovider.common.values.ProtocolType
 import com.wa2c.android.cifsdocumentsprovider.common.values.StorageType
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_AUTHORITY
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_START
 import com.wa2c.android.cifsdocumentsprovider.domain.model.DocumentId
 import com.wa2c.android.cifsdocumentsprovider.domain.model.RemoteConnection
 import com.wa2c.android.cifsdocumentsprovider.domain.model.StorageUri

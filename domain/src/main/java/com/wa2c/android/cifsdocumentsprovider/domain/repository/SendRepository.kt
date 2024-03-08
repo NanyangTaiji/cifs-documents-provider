@@ -1,7 +1,7 @@
 package com.wa2c.android.cifsdocumentsprovider.domain.repository
 
 import android.net.Uri
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
 import com.wa2c.android.cifsdocumentsprovider.domain.model.SendDataState
 import com.wa2c.android.cifsdocumentsprovider.data.DocumentFileManager
 import com.wa2c.android.cifsdocumentsprovider.domain.IoDispatcher

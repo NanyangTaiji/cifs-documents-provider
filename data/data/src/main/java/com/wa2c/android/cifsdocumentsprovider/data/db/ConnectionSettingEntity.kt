@@ -22,7 +22,7 @@ data class ConnectionSettingEntity(
     val name: String,
     /** Type */
     @ColumnInfo(name = "type")
-    val type: String = StorageType.default.value,
+    val type: String = StorageType.getDefault().value,
     /** URI */
     @ColumnInfo(name = "uri")
     val uri: String,

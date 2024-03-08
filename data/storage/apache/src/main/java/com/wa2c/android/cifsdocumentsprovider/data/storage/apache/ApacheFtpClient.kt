@@ -3,14 +3,14 @@ package com.wa2c.android.cifsdocumentsprovider.data.storage.apache
 import android.os.ProxyFileDescriptorCallback
 import android.util.LruCache
 import com.wa2c.android.cifsdocumentsprovider.common.exception.StorageException
-import com.wa2c.android.cifsdocumentsprovider.common.utils.isDirectoryUri
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logD
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logE
-import com.wa2c.android.cifsdocumentsprovider.common.utils.logW
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.isDirectoryUri
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logD
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logE
+import com.wa2c.android.cifsdocumentsprovider.common.utils.LogUtils.logW
 import com.wa2c.android.cifsdocumentsprovider.common.values.AccessMode
-import com.wa2c.android.cifsdocumentsprovider.common.values.CONNECTION_TIMEOUT
 import com.wa2c.android.cifsdocumentsprovider.common.values.ConnectionResult
-import com.wa2c.android.cifsdocumentsprovider.common.values.READ_TIMEOUT
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.CONNECTION_TIMEOUT
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.READ_TIMEOUT
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageClient
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageFile
@@ -34,6 +34,7 @@ import org.apache.commons.vfs2.provider.ftps.FtpsDataChannelProtectionLevel
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder
 import org.apache.commons.vfs2.provider.ftps.FtpsMode
 import java.time.Duration
+
 
 class ApacheFtpClient(
     private val isFtps: Boolean,
@@ -123,7 +124,7 @@ class ApacheFtpClient(
     private suspend fun FileObject.toStorageFile(): StorageFile {
         val urlText = url.toString()
         return withContext(dispatcher) {
-            val isDir = urlText.isDirectoryUri || isFolder
+            val isDir = isDirectoryUri(urlText) || isFolder
             StorageFile(
                 name = name.baseName,
                 uri = urlText,
@@ -140,7 +141,7 @@ class ApacheFtpClient(
         return withContext(dispatcher) {
             try {
                 getChildren(request, ignoreCache = true)
-                ConnectionResult.Success
+                ConnectionResult.Success()
             } catch (e: Exception) {
                 logW(e)
                 val c = e.getCause()

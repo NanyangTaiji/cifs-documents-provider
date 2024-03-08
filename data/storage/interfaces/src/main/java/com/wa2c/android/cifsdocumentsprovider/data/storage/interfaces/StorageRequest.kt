@@ -1,8 +1,9 @@
 package com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces
 
-import com.wa2c.android.cifsdocumentsprovider.common.utils.appendChild
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_SEPARATOR
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_START
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils.appendChild
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_SEPARATOR
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_START
+
 
 /**
  * Storage Request
@@ -14,7 +15,7 @@ data class StorageRequest(
 
     /** URI */
     val uri: String
-        get() = connection.uri.appendChild(path ?: "", false)
+        get() = appendChild(connection.uri,path ?: "", false)
 
     /** Share name */
     val shareName: String

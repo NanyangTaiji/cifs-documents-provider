@@ -1,9 +1,9 @@
 package com.wa2c.android.cifsdocumentsprovider.domain.model
 
 import android.os.Parcelable
-import com.wa2c.android.cifsdocumentsprovider.common.utils.appendChild
-import com.wa2c.android.cifsdocumentsprovider.common.values.DOCUMENT_ID_DELIMITER
-import com.wa2c.android.cifsdocumentsprovider.common.values.URI_SEPARATOR
+import com.wa2c.android.cifsdocumentsprovider.common.utils.AppUtils
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.DOCUMENT_ID_DELIMITER
+import com.wa2c.android.cifsdocumentsprovider.common.values.Constants.URI_SEPARATOR
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageConnection
 import com.wa2c.android.cifsdocumentsprovider.data.storage.interfaces.StorageFile
 import kotlinx.parcelize.Parcelize
@@ -29,7 +29,7 @@ data class DocumentId internal constructor(
         get() = path.isEmpty() || path == URI_SEPARATOR.toString()
 
     fun appendChild(child: String, isDirectory: Boolean = false): DocumentId? {
-        return fromIdText(idText.appendChild(child, isDirectory))
+        return fromIdText(AppUtils.appendChild(idText,child, isDirectory))
     }
 
     override fun toString(): String {
